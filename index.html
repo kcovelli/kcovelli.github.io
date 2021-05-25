@@ -1,1 +1,22 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My first Vue app</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+<div id="app">
+    <input type=number v-model="amnt" @wheel="$event.deltaY < 0 ? amnt++ : amnt > 0 ? amnt-- : '' " placeholder=0 min=0>
+    <p>Amount is: {{ amnt }}</p>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            amnt: 0
+        }
+    })
+</script>
+</body>
+</html>
