@@ -6,26 +6,36 @@
 </head>
 <body>
 <div id="app">
-    <input type=number v-model="amnt" @wheel="$event.deltaY < 0 ? amnt++ : amnt > 0 ? amnt-- : ''" placeholder=0 min=0>
-    <p>Amount is: {{ amnt }}</p>
-
-    <ul id="example-2">
-
-            <img v-for="i in imgs" :src=i height="64" width="64"/>
-
-    </ul>
+    <mat-input></mat-input>
+    <mat-input></mat-input>
+    <mat-input></mat-input>
+    <mat-input></mat-input>
+    <img v-for="i in imgs" :src=i height="64" width="64"/>
 </div>
 
 <script>
-    var app = new Vue({
+    Vue.component('mat-input', {
+        data: () => {
+            return {amnt: 0}
+        },
+        template: `
+            <div>
+                <input type=number v-model="amnt"
+                       @wheel="$event.deltaY < 0 ? amnt : amnt > 0 ? amnt-- : undefined" placeholder=0 min=0
+                       width="150">
+                <p>Amount is: {{ amnt }}</p>
+            </div>
+        `
+    })
+
+    const app = new Vue({
         el: '#app',
         data: {
-            amnt: 0,
             imgs: (() => {
                 let ret = []
                 let invalidIds = new Set([43, 59, 61, 235, 587, 613, 620, 630, 662, 666, 718])
                 for (let i = 1; i <= 728; i++) {
-                    if(invalidIds.has(i))continue;
+                    if (invalidIds.has(i)) continue;
                     ret.push('assets/img/items/collectibles_' + (i < 10 ? '00' : i < 100 ? '0' : '') + i + '.png')
                 }
                 return ret
@@ -33,6 +43,8 @@
 
         }
     })
+
+
 </script>
 </body>
 </html>
