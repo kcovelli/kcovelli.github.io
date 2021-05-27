@@ -48,13 +48,13 @@ Vue.component('mat-input', {
     },
     updated() {
         this.$root.$data.matAmnts[this.$props.id - 1] = this.$data.amnt;
-        console.log(this.$root.$data.matAmnts);
+        // console.log(this.$root.$data.matAmnts);
         let inputArr = buildComponentArr(this.$root.$data.matAmnts);
-        console.log(inputArr);
+        // console.log(inputArr);
         let craftable = bc.calculateAllRecipes(inputArr);
-        this.$root.$data.validIds = Array.from(craftable.keys());
-        console.log(craftable)
-
+        this.$root.$data.craftable = craftable;
+        this.$root.$emit('craftableUpdated', craftable)
+        console.log('craftableUpdated event emitted', craftable)
     },
     template: `
         <div class="m-1">
@@ -70,20 +70,35 @@ Vue.component('item-disp', {
     data: function () {
         let i = this.itemId;
         return {
+            visible: false,
+            recipes:[],
             imgLoc: 'assets/img/items/collectibles_' +
                 (i < 10 ? '00' : i < 100 ? '0' : '') +
-                i + '.png',
+                i + '.png'
         }
     },
+    mounted: function () {
+        this.$root.$on('craftableUpdated', (craftable) => {
+            // console.log('craftableUpdated event received');
+            if (craftable.has(this.itemId)) {
+                this.visible = true
+                this.recipes = craftable.get(this.itemId)
+                console.log(this)
+            }
+        });
+    },
     template: `
+      <div v-show="visible" style="float: left">
         <img v-bind:src=imgLoc height="64" width="64"/>
+      </div>
     `
 });
 var vm = new Vue({
     el: '#app',
     data: {
         matAmnts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        validIds: (() => { // this is dumb lmao
+        craftable: new Map(),
+        allIds: (() => { // this seems dumb lmao
             let ret = [];
             let invalidIds = new Set([43, 59, 61, 235, 587, 613, 620, 630, 662, 666, 718]);
             for (let i = 1; i <= 728; i++) {
