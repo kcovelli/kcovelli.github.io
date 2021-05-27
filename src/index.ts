@@ -11,7 +11,9 @@ let bc = new BagOfCrafting(pools, meta);
 let asciiToNum = (s: string) => s.split('').map(c => c.charCodeAt(0) - 0x61);
 let numToAscii = (n: number[]) => String.fromCharCode(...n.map(i => i + 0x61));
 let recipes = bc.calculateAllRecipes(asciiToNum('bbbbbbbbccccccccddddddddeeeeeeee'));
-for (let [r, c] of recipes) {
-    console.log(items?.get(r)?.name, numToAscii(c))
+for (let [r, c] of new Map([...recipes.entries()].sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))) {
+    console.log(items?.get(r)?.name)
+    for(let x of c)
+        console.log('\t' + numToAscii(x))
 }
 console.log('done');

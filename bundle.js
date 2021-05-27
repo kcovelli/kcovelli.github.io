@@ -106,6 +106,7 @@ class BagOfCrafting {
      BagOfCrafting.calculate() to obtain the id of each created item. Returns a mapping of item id to component list.
      */
     calculateAllRecipes(components) {
+        var _a;
         // count how many of each component we have
         let toMatCollection = (matArr) => {
             let ans = {};
@@ -132,7 +133,10 @@ class BagOfCrafting {
         let ans = new Map();
         for (let r of recipeArr) {
             let itemId = this.calculate(r);
-            ans.set(itemId, r);
+            if (ans.has(itemId))
+                (_a = ans.get(itemId)) === null || _a === void 0 ? void 0 : _a.push(r);
+            else
+                ans.set(itemId, [r]);
         }
         return ans;
     }
@@ -392,11 +396,6 @@ let meta = XmlParser.loadMeta(xmlData.itemMetaXml);
 let items = XmlParser.loadItems(xmlData.itemXml);
 let bc = new BagOfCrafting(pools, meta);
 
-console.log(bc);
-// // 'aaaaaaaa' to [1,1,1,1,1,1,1,1]
-let asciiToNum = s => s.split('').map(c => c.charCodeAt(0) - 0x61);
-let numToAscii = n => String.fromCharCode(...n.map(i => i + 0x61));
-
 let buildComponentArr = matList => {
     let ans = [];
     for (let i in matList) {
@@ -406,13 +405,6 @@ let buildComponentArr = matList => {
     }
     return ans;
 };
-
-
-// let recipes = bc.calculateAllRecipes([9]);
-// for (let [r, c] of recipes) {
-//     console.log(items?.get(r)?.name, numToAscii(c))
-// }
-// console.log('done');
 
 // material input
 Vue.component('mat-input', {
@@ -433,13 +425,8 @@ Vue.component('mat-input', {
     },
     updated() {
         this.$root.$data.matAmnts[this.$props.id - 1] = this.$data.amnt;
-        // console.log(this.$root.$data.matAmnts);
         let inputArr = buildComponentArr(this.$root.$data.matAmnts);
-        // console.log(inputArr);
-        let craftable = bc.calculateAllRecipes(inputArr);
-        this.$root.$data.craftable = craftable;
-        this.$root.$emit('craftableUpdated', craftable)
-        console.log('craftableUpdated event emitted', craftable)
+        this.$root.$emit('matsUpdated', bc.calculateAllRecipes(inputArr))
     },
     template: `
         <div class="m-1">
@@ -463,12 +450,13 @@ Vue.component('item-disp', {
         }
     },
     mounted: function () {
-        this.$root.$on('craftableUpdated', (craftable) => {
-            // console.log('craftableUpdated event received');
+        this.$root.$on('matsUpdated', (craftable) => {
             if (craftable.has(this.itemId)) {
                 this.visible = true
                 this.recipes = craftable.get(this.itemId)
-                console.log(this)
+            } else{
+                this.visible = false;
+                this.recipes = []
             }
         });
     },
@@ -482,7 +470,6 @@ var vm = new Vue({
     el: '#app',
     data: {
         matAmnts: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        craftable: new Map(),
         allIds: (() => { // this seems dumb lmao
             let ret = [];
             let invalidIds = new Set([43, 59, 61, 235, 587, 613, 620, 630, 662, 666, 718]);
