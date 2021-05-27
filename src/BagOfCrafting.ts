@@ -122,7 +122,7 @@ export class BagOfCrafting {
      Generates all possible recipes (unique combinations of 8 components) from a given arbitrary sized list of components. Then uses
      BagOfCrafting.calculate() to obtain the id of each created item. Returns a mapping of item id to component list.
      */
-    calculateAllRecipes(components: number[]): Map<number, number[]> {
+    calculateAllRecipes(components: number[]): Map<number, number[]> { //TODO: only returns one recipe per item, should return Map<number, number[][]>?
 
         // count how many of each component we have
         let toMatCollection = (matArr: number[]) => {
