@@ -81,11 +81,16 @@ Vue.component('item-disp', {
              v-on:mouseover="hovered=true"
              v-on:mouseleave="hovered=false"/>
 
-        <div class="container item-popup"
+        <div class="container item-popup-div"
              v-on:mouseover="hovered=true"
              v-on:mouseleave="hovered=false"
              v-show="hovered">
-          <p>{{ this.itemName }}</p>
+          <h6 class="item-popup-title">{{ this.itemName }}</h6>
+          <div class="item-popup-recipe-div" 
+               v-for="r in this.recipes">
+            <img class="item-popup-recipe-img" 
+                 v-for="i in r" :src="'assets/img/mats/' + i + '_small.png'"/>
+          </div>
         </div>
       </div>
     `

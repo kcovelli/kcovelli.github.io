@@ -8,8 +8,17 @@
     <script src="https://unpkg.com/vue"></script>
 </head>
 <body>
-<div id="app">
-    <div class="container">
+<div id="app" class="container">
+    <div class="row-cols-auto header" >
+        <h1>Bag of Crafting Helper</h1>
+
+        <p class="header-body">
+            Enter the number of consumables you have available for crafting and everything you can make will appear!
+            If you have a second monitor/play in windowed mode, you can hover over an input and scroll to change the
+            amount without having to pause the game.
+        </p>
+    </div>
+    <div class="row-cols-auto input-container">
         <div class="row">
             <div class="col">
                 <mat-input id=1></mat-input>
@@ -54,7 +63,24 @@
             </div>
         </div>
     </div>
-    <item-disp v-for="i of allIds" :item-id="i" v-bind:ref="i"></item-disp>
+    <div class="row-cols-auto item-container" style="overflow: auto">
+        <div class="container ">
+            <div class="col-1"></div>
+            <div class="col">
+                <item-disp v-for="i of allIds" :item-id="i" v-bind:ref="i"></item-disp>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+    <div class="row-cols-auto footer">
+        <p>
+            Unlike <a href="https://platinumgod.co.uk/bag-of-crafting/index.html">this</a> tool by <a
+                href="https://twitter.com/eluc_">@eluc_</a>, or <a href="https://lucas.cool/taintedcain/">this</a>
+            tool
+            by <a href="https://twitter.com/luhof">@Luhof</a> the recipes for each item are calculated on the fly
+            instead of hard coded so (usually) more items are shown!
+        </p>
+    </div>
 </div>
 </body>
 <script src="bundle.js"></script>
