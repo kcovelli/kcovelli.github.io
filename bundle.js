@@ -396,11 +396,13 @@ let meta = XmlParser.loadMeta(xmlData.itemMetaXml);
 let items = XmlParser.loadItems(xmlData.itemXml);
 let bc = new BagOfCrafting(pools, meta);
 
+console.log(items)
+
 let buildComponentArr = matList => {
     let ans = [];
     for (let i in matList) {
-        for (let j =0; j < matList[i]; j++) {
-            ans.push(parseInt(i)+1)
+        for (let j = 0; j < matList[i]; j++) {
+            ans.push(parseInt(i) + 1)
         }
     }
     return ans;
@@ -429,11 +431,11 @@ Vue.component('mat-input', {
         this.$root.$emit('matsUpdated', bc.calculateAllRecipes(inputArr))
     },
     template: `
-        <div class="m-1">
-            <img v-bind:src='"assets/img/mats/" + id + ".png"' width=32/>
-            <input type=number v-model="amnt" v-on:wheel.prevent="handleScroll" placeholder=0 min=0
-                   style="width: 3em" class="text-center">
-        </div>
+      <div class="m-1">
+        <img v-bind:src='"assets/img/mats/" + id + ".png"' width=32/>
+        <input class="text-center num-input" type=number v-model="amnt" placeholder=0 min=0
+               v-on:wheel.prevent="handleScroll">
+      </div>
     `
 });
 // item display
@@ -442,8 +444,10 @@ Vue.component('item-disp', {
     data: function () {
         let i = this.itemId;
         return {
-            visible: false,
-            recipes:[],
+            visible: true,
+            hovered: false,
+            recipes: [],
+            itemName: items.get(this.itemId)?.name,
             imgLoc: 'assets/img/items/collectibles_' +
                 (i < 10 ? '00' : i < 100 ? '0' : '') +
                 i + '.png'
@@ -454,18 +458,33 @@ Vue.component('item-disp', {
             if (craftable.has(this.itemId)) {
                 this.visible = true
                 this.recipes = craftable.get(this.itemId)
-            } else{
+            } else {
                 this.visible = false;
                 this.recipes = []
             }
         });
     },
     template: `
-      <div v-show="visible" style="float: left">
-        <img v-bind:src=imgLoc height="64" width="64"/>
+      <div class="item-disp-div" v-show="visible">
+        <img v-bind:src=imgLoc height="64" width="64"
+             v-on:mouseover="hovered=true"
+             v-on:mouseleave="hovered=false"/>
+
+        <div class="container item-popup"
+             v-on:mouseover="hovered=true"
+             v-on:mouseleave="hovered=false"
+             v-show="hovered">
+          <p>{{ this.itemName }}</p>
+        </div>
       </div>
     `
 });
+
+// Vue.component('recipe-popup', {
+//
+//
+// })
+
 var vm = new Vue({
     el: '#app',
     data: {

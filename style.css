@@ -1,0 +1,14 @@
+.num-input {
+    width: 3em;
+}
+
+.item-disp-div {
+    float: left
+}
+
+.item-popup {
+    position: absolute;
+    width: 150px;
+    height: 50px;
+    background-color: red
+}
