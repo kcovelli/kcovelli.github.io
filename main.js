@@ -67,7 +67,7 @@ Vue.component('item-disp', {
     mounted: function () {
         this.$root.$on('matsUpdated', (craftable) => {
             if (craftable.has(this.itemId)) {
-                this.visible = true
+                this.visible = false
                 this.recipes = craftable.get(this.itemId)
             } else {
                 this.visible = false;
