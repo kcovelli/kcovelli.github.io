@@ -55,7 +55,7 @@ Vue.component('item-disp', {
     data: function () {
         let i = this.itemId;
         return {
-            visible: true,
+            visible: false,
             hovered: false,
             recipes: [],
             itemName: items.get(this.itemId)?.name,
@@ -67,7 +67,7 @@ Vue.component('item-disp', {
     mounted: function () {
         this.$root.$on('matsUpdated', (craftable) => {
             if (craftable.has(this.itemId)) {
-                this.visible = false
+                this.visible = true
                 this.recipes = craftable.get(this.itemId)
             } else {
                 this.visible = false;
